@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Vue3</title>
+    <style>
+        .box {
+            height: 100px;
+            width: 100px;
+            background-color: blueviolet;
+        }
+
+        .box-else {
+            height: 100px;
+            width: 100px;
+            background-color: chocolate;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- V-cloak es una directiva que esconde los elemetos hasta que toda la aplicaion esté cargada completamente -->
+    <div id="app" v-cloak>
+        <!-- {{ saludo }} -->
+        <br>
+        <!-- Se obtienen o pasan los valores por medio de la directiva v-model y funciona bidireccionalmente -->
+        <input type="text" @keyup.enter="saludo_(saludo + ' 👦🏻')" v-model="saludo">
+        <hr>
+        <!-- v-if actúa como una condicion en el elemento. Si es falso, retira el elemento del DOM -->
+        <div v-if="isVisible" class="box"></div>
+        <div v-else-if="isVisible2" class="box"></div>
+        <div v-else class="box-else"></div>
+        <!-- <div v-esle class="box-else"></div> -->
+
+        <!-- Eventos -->
+        <!-- V-on es una directiva específica para eventos en Vue. Tambien funciona con una v-on:click ó @click -->
+        <!-- @click="isVisible = !isVisible" -->
+        <!-- prevent es equivalente a prevent default  -->
+        <button @click.prevent="toggleBox">{{ btn_text }}</button>
+        <hr>
+        <!-- Sirve para los mismo que v-if, pero renderiza el div. Equivalente a display none -->
+        <!-- Util para cuando se necesita alternar entre visibel e invisible muchas veces  -->
+        <div v-show="isVisible" class="box"></div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        let app = Vue.createApp({
+            data(){
+                return {
+                    btn_text: "Mostrar cuadros",
+                    saludo: 'Hola vue.js 3!',
+                    isVisible: false,
+                    isVisible2: false 
+                }
+            },
+            methods: {
+                toggleBox() {
+                    this.isVisible = !this.isVisible
+                    if (this.isVisible){
+                        this.btn_text = "Esconder cuadros"
+                    }else{
+                        this.btn_text = "Mostrar cuadros"
+                    }
+                }, 
+
+                saludo_ (saludo){
+                    if (saludo !== "")
+                    alert(saludo)
+                }
+                
+            }
+        })
+        app.mount('#app')
+    </script>
+</body>
+</html>

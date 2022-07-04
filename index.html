@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input {
+            margin: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <form-especial/>
+    </div>
+    <!-- V-bind -->
+    <!-- Convierte un atributo de html en un parametro que puede recibir variables js -->
+    <!-- v-model envía una variable como v-bind, y se recoje con el nombre de modelValue -->
+    <!-- De esta manera, v-model="ejemplo" == v-bind:modelValue="ejemplo" -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        let app = Vue.createApp({
+            app: function(){
+                return {}
+            }, 
+            methods: {
+                
+            }
+        })
+        app.component('form-especial', {
+            template: 
+            `<form @submit.prevent="handleSubmit">
+                <h2> {{ title }} </h2>
+                <p v-for="(elem, i) in inputs" v-bind:key="i">
+                    {{ i }} - {{ elem }}    
+                </p>
+                <custom-input v-model="email" v-bind:label="emailLabel"/>
+                <custom-input v-model="pass" :label="passLabel"/>
+                <button type="submit">Login</button>
+            </form>`,
+            data(){
+                return {
+                    inputs: [
+                        'email',
+                        'password',
+                        'name'
+                    ],
+                    title: 'Form login',
+                    email: '',
+                    pass: '',
+                    emailLabel: 'Email',
+                    passLabel: 'Password'
+                }
+            },
+            components: ['custom-input'],
+            methods: {
+                handleSubmit (){
+                    console.log(this.email, this.pass)
+                    if (this.email !== '' && this.pass !== ''){
+                        alert('enviado')
+                    }else{
+                        alert('Los campos son obligatorios')
+                    }
+                }
+            }
+        })
+
+        /*
+        * props debe contener un arreglo con la lista de variables que llegan al componente hijo.
+        * Éstas variables no se pueden editar desde un componente hijo (props are read only).
+        */
+        app.component('custom-input', {
+            template: 
+            `<label>
+                {{ label }}
+                <input type="text" v-model="inputValue"/> 
+            </label>`,
+            props: ['label', 'modelValue'],
+            // Es computedDD NO compute
+            computed: {
+                // Cuando v-model llama inputValue, se ejecutan el get y el set.
+                inputValue: {
+                    get(){
+                        // Obtiene el valor de modelValue que llega desde props y lo guarda en
+                        // inputValue
+                        return this.modelValue
+                    },
+                    set (value){
+                        console.log(value)
+                        // Emite una señal (con un evento o metodo) que puede ser escuhcada por 
+                        // otros componentes
+                        // v-model ya esta listo para escuchar estos eventos emitidos
+                        this.$emit('update:modelValue', value)
+                    }
+                }
+            }
+        })
+
+        app.mount('#app')
+    </script>
+</body>
+</html>
